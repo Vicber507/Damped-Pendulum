@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D 
+from matplotlib.animation import FuncAnimation
 
-def Graph3D(x, xbar, y, ybar, z, zbar, etiqueta, color_mapa, save_path=None):
+def Graph3D(x, xbar, y, ybar, z, zbar, etiqueta, color_mapa, save_path=None, video=None):
     """
     Grafica datos en 3D y permite guardar la gráfica en un archivo.
 
@@ -19,24 +20,24 @@ def Graph3D(x, xbar, y, ybar, z, zbar, etiqueta, color_mapa, save_path=None):
     - color_mapa: mapa de colores para los puntos.
     - save_path: ruta completa donde se guardará la gráfica (opcional, debe incluir la extensión del archivo).
     """
-    
+
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
-    
-    
+
+    # Crear la gráfica 3D
     p = ax.scatter(x, y, z, c=z, cmap=color_mapa, marker='o', edgecolor=(0.5, 0.5, 0.5, 1.0), s=50, alpha=0.7)
-    
-    
+
+    # Configuración de la barra de color
     color_bar = fig.colorbar(p, ax=ax, shrink=0.6, aspect=10)
     color_bar.set_label(rf'{zbar}', fontsize=12)
 
-    
+    # Etiquetas y títulos
     ax.set_title(rf'{etiqueta}', fontsize=15, fontweight='bold')
     ax.set_xlabel(rf'{xbar}', fontsize=12, labelpad=10)
     ax.set_ylabel(rf'{ybar}', fontsize=12, labelpad=10)
     ax.set_zlabel(rf'{zbar}', fontsize=12, labelpad=10)
 
-    
+    # Estilo de la gráfica
     ax.xaxis.pane.set_edgecolor('gray')
     ax.yaxis.pane.set_edgecolor('gray')
     ax.zaxis.pane.set_edgecolor('gray')
@@ -45,10 +46,17 @@ def Graph3D(x, xbar, y, ybar, z, zbar, etiqueta, color_mapa, save_path=None):
     ax.zaxis.pane.set_alpha(0.1)
     ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.3)
 
-    
-    ax.view_init(elev=25, azim=135)
-    
-     
+    # Establecer la vista inicial
+    initial_elev = 25
+    initial_azim = 135
+    ax.view_init(elev=initial_elev, azim=initial_azim)
+
+    # Función para actualizar la vista durante la animación
+    def update(frame):
+        ax.view_init(elev=30, azim=frame)
+        return ax,
+
+    # Guardar la imagen si se proporciona una ruta
     if save_path:
         plt.savefig(save_path, format=save_path.split('.')[-1], dpi=300, bbox_inches='tight')
         print(f"Gráfica 3D guardada en: {save_path}")
@@ -56,7 +64,22 @@ def Graph3D(x, xbar, y, ybar, z, zbar, etiqueta, color_mapa, save_path=None):
     
     plt.show()
 
-def Graph2D(x, xbar, y, ybar, etiqueta, color_mapa, save_path=None):
+    
+    if video:
+        ani = FuncAnimation(fig, update, frames=np.arange(0, 360, 2), interval=50, blit=False)
+        ani.save(video, writer='ffmpeg', dpi=300)
+        print(f"Video guardado en: {video}")
+
+        
+
+    
+     
+
+
+    
+   
+
+def Graph2D(x, xbar, y, ybar, etiqueta, color_mapa, save_path=None,  video=None):
     fig, ax = plt.subplots(figsize=(10, 6))
     
     
@@ -78,10 +101,11 @@ def Graph2D(x, xbar, y, ybar, etiqueta, color_mapa, save_path=None):
     ax.spines['left'].set_color('gray')
     ax.spines['bottom'].set_color('gray')
     
-    
+        
     if save_path:
         plt.savefig(save_path, format=save_path.split('.')[-1], dpi=300, bbox_inches='tight')
         print(f"Gráfica 3D guardada en: {save_path}")
+        
     
     plt.show()
     
