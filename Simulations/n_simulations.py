@@ -4,8 +4,8 @@ from scipy.integrate import odeint
 
 # Constantes
 g = 9.82  # Aceleración debido a la gravedad (m/s^2)
-L = 0.57  # Longitud del péndulo (m)
-m = 0.22610  # Masa del péndulo (kg)
+L = 1  # Longitud del péndulo (m)
+m = 1 # Masa del péndulo (kg)
 gamma = 10
 
 def pendulum_derivatives(y, t, g, L, gamma, m, n):
